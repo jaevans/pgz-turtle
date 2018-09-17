@@ -12,11 +12,13 @@ def draw():
     rocketship.draw()
 
 def forward(actor, distance):
-    the_angle = math.radians(actor.angle+90)
-    print(the_angle)
-    print("dx, dy = ({},{})".format(math.cos(the_angle), math.sin(the_angle)))
+    the_angle = math.radians(actor.angle)
     actor.x += distance * math.cos(the_angle)
-    actor.y += distance * math.sin(the_angle)
+    # We subtract the y as our y gets bigger heading downward
+    actor.y -= distance * math.sin(the_angle)
+
+def backward(actor, distance):
+    forward(actor, -distance)
     
 def on_key_down(key):
     print(key)
@@ -28,8 +30,10 @@ def on_key_down(key):
         
 def update():
     if keyboard[keys.LEFT]:
-        rocketship.angle += 2
+        rocketship.angle += 10
     elif keyboard[keys.RIGHT]:
-        rocketship.angle -= 2
+        rocketship.angle -= 10
     if keyboard[keys.UP]:
-        forward(rocketship,10)
+        forward(rocketship, 10)
+    elif keyboard[keys.DOWN]:
+        backward(rocketship, 10)
