@@ -21,7 +21,6 @@ def backward(actor, distance):
     forward(actor, -distance)
     
 def on_key_down(key):
-    print(key)
     if key == keys.SPACE:
         rocketship.pos = rocketship.width / 2, rocketship.height / 2
         rocketship.angle = 0
