@@ -1,11 +1,38 @@
 import math
 
-rocketship = Actor('rocketship')
-rocketship.angle = 0
-WIDTH = 300
-HEIGHT = 300
 
 
+class TurtleActor(object):
+    def __init__(self, *args, **kwargs):
+        self.__dict__['_actor'] = Actor(*args, **kwargs)
+        
+    def __getattr__(self, attr):
+        if attr in self.__dict__:
+            return object.__getattribute__(self, attr)
+        else:
+            return getattr(self.__dict__['_actor'], attr)
+            
+    def __setattr__(self, attr, value):
+        if attr in self.__dict__:
+            return object.__setattribute__(self, attr, value)
+        else:
+            return setattr(self._actor, attr, value)
+        
+    def forward(self, distance):
+        the_angle = math.radians(self._actor.angle)
+        self._actor.x += distance * math.cos(the_angle)
+        # We subtract the y as our y gets bigger heading downward
+        self._actor.y -= distance * math.sin(the_angle)
+        
+    def backward(self, distance):
+        self.forward(-distance)
+        
+    def left(self, angle):
+        self._actor.angle += angle
+    
+    def right(self, angle):
+        self._actor.angle -= angle
+        
 def draw():
     #screen.fill((173, 216, 230))
     screen.fill('lightblue')
@@ -29,10 +56,16 @@ def on_key_down(key):
         
 def update():
     if keyboard[keys.LEFT]:
-        rocketship.angle += 10
+        rocketship.left(10)
     elif keyboard[keys.RIGHT]:
-        rocketship.angle -= 10
+        rocketship.right(10)
     if keyboard[keys.UP]:
-        forward(rocketship, 10)
+        rocketship.forward(10)
     elif keyboard[keys.DOWN]:
-        backward(rocketship, 10)
+        rocketship.backward(10)
+        
+rocketship = TurtleActor('rocketship')
+rocketship.angle = 0
+WIDTH = 600 
+HEIGHT = 600
+trail = []
